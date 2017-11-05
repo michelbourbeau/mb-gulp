@@ -10,6 +10,25 @@ var rename      = require('gulp-rename');         // minify-css
 var cleancss    = require('gulp-clean-css');      // minify-css
 var sourcemaps  = require('gulp-sourcemaps');     // minify-css
 var runsequence = require('run-sequence');        // *::test
+var clean       = require('gulp-clean');          // clean
+
+// --------------------------------------------------
+// Clean
+// --------------------------------------------------
+gulp.task('clean', function() {
+  return gulp.src('./dist/*', {force: true})
+    .pipe(clean());
+});
+
+gulp.task('clean::css', function() {
+  return gulp.src('./dist/css/*', {force: true})
+    .pipe(clean());
+});
+
+gulp.task('clean::js', function() {
+  return gulp.src('./dist/js/*', {force: true})
+    .pipe(clean());
+});
 
 // --------------------------------------------------
 // Lint SASS
@@ -19,6 +38,16 @@ gulp.task('sass::lint', function () {
     .pipe(sasslint())
     .pipe(sasslint.format())
     .pipe(sasslint.failOnError())
+});
+
+// --------------------------------------------------
+// Test SCSS, build and minify CSS
+// --------------------------------------------------
+gulp.task('sass::test', function(done) {
+  runsequence('sass::lint', 'sass::build', 'css::min', function() {
+      console.log('sass::test Succes!');
+      done();
+  });
 });
 
 // --------------------------------------------------
@@ -57,16 +86,6 @@ gulp.task('scripts::min', function() {
 });
 
 // --------------------------------------------------
-// Test SCSS, build and minify CSS
-// --------------------------------------------------
-gulp.task('sass::test', function(done) {
-  runsequence('sass::lint', 'sass::build', 'css::min', function() {
-      console.log('sass::test Succes!');
-      done();
-  });
-});
-
-// --------------------------------------------------
 // Watch SASS & SCRIPT Files For Changes
 // --------------------------------------------------
 gulp.task('watch', function() {
@@ -86,4 +105,4 @@ gulp.task('watch::sass', function() {
 // --------------------------------------------------
 // Default task cmd: gulp
 // --------------------------------------------------
-gulp.task('default', ['scripts::min', 'sass::lint', 'sass::build', 'css::min', 'watch']);
+gulp.task('default', ['clean', 'scripts::min', 'sass::lint', 'sass::build', 'css::min', 'watch']);
