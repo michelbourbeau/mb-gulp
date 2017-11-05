@@ -2,24 +2,18 @@
 var gulp      = require('gulp');
 
 // Include Our Plugins
-var jshint      = require('gulp-jshint');
-var sass        = require('gulp-sass');
-var concat      = require('gulp-concat');
-var uglify      = require('gulp-uglify');
-var rename      = require('gulp-rename');
-var sasslint    = require('gulp-sass-lint');
-var cleancss    = require('gulp-clean-css');
-var sourcemaps  = require('gulp-sourcemaps');
-var runsequence = require('run-sequence');
+var sass        = require('gulp-sass');           // all       // lint
+var concat      = require('gulp-concat');         // scripts
+var uglify      = require('gulp-uglify');         // scripts
+var sasslint    = require('gulp-sass-lint');      // lint-sass
+var rename      = require('gulp-rename');         // minify-css
+var cleancss    = require('gulp-clean-css');      // minify-css
+var sourcemaps  = require('gulp-sourcemaps');     // minify-css
+var runsequence = require('run-sequence');        // *::test
 
-// Lint our JS
-gulp.task('lint', function() {
-    return gulp.src('assets/js/*.js')
-        .pipe(jshint())
-        .pipe(jshint.reporter('default'));
-});
-
-// Lint our SASS
+// --------------------------------------------------
+// Lint SASS
+// --------------------------------------------------
 gulp.task('lint-sass', function () {
   return gulp.src('assets/sass/**/*.s+(a|c)ss')
     .pipe(sasslint())
@@ -27,14 +21,18 @@ gulp.task('lint-sass', function () {
     .pipe(sasslint.failOnError())
 });
 
-// Compile Our SASS
+// --------------------------------------------------
+// Compile SASS
+// --------------------------------------------------
 gulp.task('sass', function() {
     return gulp.src('assets/sass/style.scss')
         .pipe(sass())
         .pipe(gulp.dest('dist/css'));
 });
 
+// --------------------------------------------------
 // Minify CSS
+// --------------------------------------------------
 gulp.task('minify-css', function() {
   return gulp.src('./dist/css/style.css')
     .pipe(sourcemaps.init())
@@ -44,7 +42,9 @@ gulp.task('minify-css', function() {
     .pipe(gulp.dest('./dist/css'));
 });
 
+// --------------------------------------------------
 // Concatenate & Minify JS
+// --------------------------------------------------
 gulp.task('scripts', function() {
     return gulp.src('assets/js/*.js')
         .pipe(concat('all.js'))
@@ -54,17 +54,26 @@ gulp.task('scripts', function() {
         .pipe(gulp.dest('dist/js'));
 });
 
-// Watch Files For Changes
-gulp.task('watch', function() {
-    gulp.watch('assets/js/*.js', ['lint', 'scripts']);
-    gulp.watch('assets/sass/*.scss', ['sass']);
-});
 
-// Default Task
-//gulp.task('run', ['sass', 'lint-sass', 'minify-css']);
-gulp.task('run', function(done) {
+// --------------------------------------------------
+// Test SCSS, build and minify CSS
+// --------------------------------------------------
+gulp.task('sass::test', function(done) {
   runsequence('lint-sass', 'sass', 'minify-css', function() {
       console.log('Well Done Bro!');
       done();
   });
 });
+
+// --------------------------------------------------
+// Watch SASS & SCRIPT Files For Changes
+// --------------------------------------------------
+gulp.task('watch', function() {
+  gulp.watch('assets/js/*.js', ['scripts']);
+  gulp.watch('assets/sass/**/*.scss', ['sass::test']);
+});
+
+// --------------------------------------------------
+// Default task cmd: gulp
+// --------------------------------------------------
+gulp.task('default', ['watch']);
