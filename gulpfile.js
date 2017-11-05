@@ -25,19 +25,17 @@ gulp.task('lint-sass', function () {
 // Compile SASS
 // --------------------------------------------------
 gulp.task('sass', function() {
-    return gulp.src('assets/sass/style.scss')
+    return gulp.src('assets/sass/*.scss')
         .pipe(sass())
-        .pipe(gulp.dest('dist/css'));
+        .pipe(gulp.dest('assets/css'));
 });
 
 // --------------------------------------------------
 // Minify CSS
 // --------------------------------------------------
 gulp.task('minify-css', function() {
-  return gulp.src('./dist/css/style.css')
-    .pipe(sourcemaps.init())
+  return gulp.src('./assets/css/*.css')
     .pipe(cleancss())
-    .pipe(sourcemaps.write())
     .pipe(rename({suffix: '.min'}))
     .pipe(gulp.dest('./dist/css'));
 });
@@ -47,13 +45,10 @@ gulp.task('minify-css', function() {
 // --------------------------------------------------
 gulp.task('scripts', function() {
     return gulp.src('assets/js/*.js')
-        .pipe(concat('all.js'))
-        .pipe(gulp.dest('dist/js'))
-        .pipe(rename('all.min.js'))
-        .pipe(uglify())
-        .pipe(gulp.dest('dist/js'));
+    .pipe(rename({suffix: '.min'}))
+    .pipe(uglify())
+    .pipe(gulp.dest('dist/js'));
 });
-
 
 // --------------------------------------------------
 // Test SCSS, build and minify CSS
@@ -76,4 +71,4 @@ gulp.task('watch', function() {
 // --------------------------------------------------
 // Default task cmd: gulp
 // --------------------------------------------------
-gulp.task('default', ['watch']);
+gulp.task('default', ['sass::test', 'scripts', 'watch']);
