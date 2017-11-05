@@ -71,4 +71,4 @@ gulp.task('watch', function() {
 // --------------------------------------------------
 // Default task cmd: gulp
 // --------------------------------------------------
-gulp.task('default', ['sass::test', 'scripts', 'watch']);
+gulp.task('default', ['scripts', 'lint-sass', 'sass', 'minify-css', 'watch']);
