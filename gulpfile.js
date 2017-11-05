@@ -14,7 +14,7 @@ var runsequence = require('run-sequence');        // *::test
 // --------------------------------------------------
 // Lint SASS
 // --------------------------------------------------
-gulp.task('lint-sass', function () {
+gulp.task('sass::lint', function () {
   return gulp.src('assets/sass/**/*.s+(a|c)ss')
     .pipe(sasslint())
     .pipe(sasslint.format())
@@ -24,38 +24,44 @@ gulp.task('lint-sass', function () {
 // --------------------------------------------------
 // Compile SASS
 // --------------------------------------------------
-gulp.task('sass', function() {
+gulp.task('sass::build', function() {
     return gulp.src('assets/sass/*.scss')
         .pipe(sass())
         .pipe(gulp.dest('assets/css'));
+
+        console.log('sass::build Done!');
 });
 
 // --------------------------------------------------
 // Minify CSS
 // --------------------------------------------------
-gulp.task('minify-css', function() {
+gulp.task('css::min', function() {
   return gulp.src('./assets/css/*.css')
     .pipe(cleancss())
     .pipe(rename({suffix: '.min'}))
     .pipe(gulp.dest('./dist/css'));
+
+    console.log('css::min Done!');
 });
 
 // --------------------------------------------------
 // Concatenate & Minify JS
 // --------------------------------------------------
-gulp.task('scripts', function() {
+gulp.task('scripts::min', function() {
     return gulp.src('assets/js/*.js')
     .pipe(rename({suffix: '.min'}))
     .pipe(uglify())
     .pipe(gulp.dest('dist/js'));
+
+    console.log('scripts::min Done!');
 });
 
 // --------------------------------------------------
 // Test SCSS, build and minify CSS
 // --------------------------------------------------
 gulp.task('sass::test', function(done) {
-  runsequence('lint-sass', 'sass', 'minify-css', function() {
-      console.log('Well Done Bro!');
+  runsequence('sass::lint', 'sass::build', 'css::min', function() {
+      console.log('sass::test Succes!');
       done();
   });
 });
@@ -64,11 +70,20 @@ gulp.task('sass::test', function(done) {
 // Watch SASS & SCRIPT Files For Changes
 // --------------------------------------------------
 gulp.task('watch', function() {
-  gulp.watch('assets/js/*.js', ['scripts']);
+  gulp.watch('assets/js/*.js', ['scripts::min']);
   gulp.watch('assets/sass/**/*.scss', ['sass::test']);
+  console.log('watch is now running...');
+});
+
+// --------------------------------------------------
+// Watch SASS ONLY
+// --------------------------------------------------
+gulp.task('watch::sass', function() {
+  gulp.watch('assets/sass/**/*.scss', ['sass::test']);
+  console.log('watch::sass is now running...');
 });
 
 // --------------------------------------------------
 // Default task cmd: gulp
 // --------------------------------------------------
-gulp.task('default', ['scripts', 'lint-sass', 'sass', 'minify-css', 'watch']);
+gulp.task('default', ['scripts::min', 'sass::lint', 'sass::build', 'css::min', 'watch']);
