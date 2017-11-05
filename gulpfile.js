@@ -48,7 +48,7 @@ gulp.task('minify-css', function() {
 gulp.task('scripts', function() {
     return gulp.src('assets/js/*.js')
         .pipe(concat('all.js'))
-        .pipe(gulp.dest('dist'))
+        .pipe(gulp.dest('dist/js'))
         .pipe(rename('all.min.js'))
         .pipe(uglify())
         .pipe(gulp.dest('dist/js'));
@@ -56,8 +56,8 @@ gulp.task('scripts', function() {
 
 // Watch Files For Changes
 gulp.task('watch', function() {
-    gulp.watch('js/*.js', ['lint', 'scripts']);
-    gulp.watch('scss/*.scss', ['sass']);
+    gulp.watch('assets/js/*.js', ['lint', 'scripts']);
+    gulp.watch('assets/sass/*.scss', ['sass']);
 });
 
 // Default Task
