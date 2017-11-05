@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "sasslintConfig": "lib/.sass-lint.yml",
   "author": "Michel Bourbeau",
   "license": "ISC",
   "devDependencies": {
@@ -21,7 +22,12 @@
     "gulp-sourcemaps": "^2.6.1",
     "gulp-uglify": "^3.0.0",
     "jshint": "^2.9.5",
+    "require-dir": "^0.3.2",
     "requirejs": "^2.3.5",
     "run-sequence": "^2.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/michelbourbeau/mb-gulp"
   }
 }
