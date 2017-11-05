@@ -63,4 +63,10 @@ gulp.task('default', ['lint', 'sass', 'scripts', 'watch']);
 // ==================================================
 
 
+// ==================================================
+// Install Lint Sass
+// ==================================================
 npm install gulp-sass-lint --save-dev
+
+// Add dependency to gulpfile.js
+sassLint = require('gulp-sass-lint');
